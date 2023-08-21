@@ -14,11 +14,10 @@ fun Route.customerController() {
          * Get list of all the customers
          */
         get {
-            if (customerStorage.isNotEmpty()){
+            if (customerStorage.isNotEmpty()) {
                 call.respond(customerStorage)
-            }
-            else{
-                call.respondText(text="No customer found", status= HttpStatusCode.OK)
+            } else {
+                call.respondText(text = "No customer found", status = HttpStatusCode.OK)
             }
         }
         /**
@@ -26,16 +25,15 @@ fun Route.customerController() {
          */
         get("{id?}") {
             val id = call.parameters["id"]
-            if (!id.isNullOrEmpty()){
+            if (!id.isNullOrEmpty()) {
                 val customer = customerStorage.find { it.id == id }
-                if (customer != null)
-                {
+                if (customer != null) {
                     call.respond(customer)
 
                 }
-                call.respondText(text="Customer with id $id does not exist", status=HttpStatusCode.NotFound)
+                call.respondText(text = "Customer with id $id does not exist", status = HttpStatusCode.NotFound)
             }
-            call.respondText(text="Missing Id parameter", status=HttpStatusCode.BadRequest)
+            call.respondText(text = "Missing Id parameter", status = HttpStatusCode.BadRequest)
         }
         /**
          * Create new customer
@@ -43,13 +41,20 @@ fun Route.customerController() {
         post {
             val customerObj = call.receive<Customer>()
             customerStorage.add(customerObj)
-            call.respondText(text="Customer successfully created", status=HttpStatusCode.Created)
+            call.respondText(text = "Customer successfully created", status = HttpStatusCode.Created)
         }
         /**
          * Delete customer data
          */
         delete("{id?}") {
-
+            val id = call.parameters["id"]
+            if (!id.isNullOrEmpty()) {
+                if (customerStorage.removeIf { it.id == id }) {
+                    call.respondText(text = "Customer with id $id is successfully removed", status = HttpStatusCode.OK)
+                }
+                call.respondText(text = "User with id $id does not exists", status = HttpStatusCode.NotFound)
+            }
+            call.respondText(text = "Invalid parameter `id`", status = HttpStatusCode.BadRequest)
         }
     }
 
