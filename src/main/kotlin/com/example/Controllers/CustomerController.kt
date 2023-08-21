@@ -1,8 +1,10 @@
 package com.example.Controllers
 
+import com.example.models.Customer
 import com.example.models.customerStorage
 import io.ktor.http.*
 import io.ktor.server.application.*
+import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 
@@ -29,7 +31,9 @@ fun Route.customerController() {
          * Create new customer
          */
         post {
-
+            val customerObj = call.receive<Customer>()
+            customerStorage.add(customerObj)
+            call.respondText(text="Customer successfully created", status=HttpStatusCode.Created)
         }
         /**
          * Delete customer data
