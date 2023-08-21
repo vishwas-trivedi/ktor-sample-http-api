@@ -25,7 +25,17 @@ fun Route.customerController() {
          * Get detail of specific customer
          */
         get("{id?}") {
+            val id = call.parameters["id"]
+            if (!id.isNullOrEmpty()){
+                val customer = customerStorage.find { it.id == id }
+                if (customer != null)
+                {
+                    call.respond(customer)
 
+                }
+                call.respondText(text="Customer with id $id does not exist", status=HttpStatusCode.NotFound)
+            }
+            call.respondText(text="Missing Id parameter", status=HttpStatusCode.BadRequest)
         }
         /**
          * Create new customer
