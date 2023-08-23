@@ -8,6 +8,9 @@ import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 
+/**
+ * Customer Controller
+ */
 fun Route.customerController() {
     route("/customer") {
         /**
@@ -45,6 +48,7 @@ fun Route.customerController() {
         }
         /**
          * Delete customer data
+         * Parameter : Customer id (Required)
          */
         delete("{id?}") {
             val id = call.parameters["id"]
